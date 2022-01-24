@@ -9,7 +9,7 @@ resource "kubernetes_deployment" "mysql_deployment" {
   spec {
     replicas = 1
     selector {
-      match_labels {
+      match_labels = {
         app = "mysql"
       }
     }
@@ -23,8 +23,8 @@ resource "kubernetes_deployment" "mysql_deployment" {
         container {
           name = "mysql"
           image = "mysql:5.7"
-          ports {
-            containerPort = 3306
+          port {
+            container_port = 3306
           }
           env {
             name = "MYSQL_ROOT_PASSWORD"
