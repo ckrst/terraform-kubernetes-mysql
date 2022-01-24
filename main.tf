@@ -1,25 +1,26 @@
 resource "kubernetes_deployment" "mysql_deployment" {
   metadata {
     name = "mysql-deployment"
-    labels {
+    namespace = var.namespace
+    labels = {
       app = "mysql"
     }
   }
   spec {
     replicas = 1
     selector {
-      matchLabels {
+      match_labels {
         app = "mysql"
       }
     }
     template {
       metadata {
-        labels {
+        labels = {
           app = "mysql"
         }
       }
       spec {
-        containers {
+        container {
           name = "mysql"
           image = "mysql:5.7"
           ports {
