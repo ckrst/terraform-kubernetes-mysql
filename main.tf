@@ -22,7 +22,7 @@ resource "kubernetes_deployment" "mysql_deployment" {
       spec {
         container {
           name = "mysql"
-          image = "mysql:5.7"
+          image = var.mysql_image
           port {
             container_port = 3306
           }
@@ -33,5 +33,23 @@ resource "kubernetes_deployment" "mysql_deployment" {
         }
       }
     }
+  }
+}
+
+resource "kubernetes_service" "mysql_service" {
+  metadata {
+    name = "mysql-service"
+    namespace = var.namespace
+  }
+  spec {
+    selector = {
+      app = "${kubernetes_deployment.mysql_deployment.spec.0.template.0.metadata.0.labels.app}"
+    }
+    port {
+      port        = 3306
+      target_port = 3306
+    }
+
+    type = var.service_type
   }
 }
