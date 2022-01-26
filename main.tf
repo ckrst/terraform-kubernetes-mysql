@@ -53,3 +53,71 @@ resource "kubernetes_service" "mysql_service" {
     type = var.service_type
   }
 }
+
+resource "kubernetes_cron_job" "db_backup_agent" {
+  metadata {
+    name = "db-backup-agent"
+    namespace = var.namespace
+  }
+  spec {
+    schedule = "0 0 * * *"
+    job_template {
+      spec {
+        template {
+          metadata {
+            labels = {
+              app = "db-backup-agent"
+            }
+          }
+          spec {
+            container {
+              name = "db-backup-agent"
+              image = "perfectweb/mysqldump-to-s3"
+
+              env {
+                name = "AWS_ACCESS_KEY_ID"
+                value = var.aws_access_key_id
+              }
+
+              env {
+                name = "AWS_SECRET_ACCESS_KEY"
+                value = var.aws_secret_access_key
+              }
+
+              env {
+                name = "AWS_BUCKET"
+                value = var.aws_bucket
+              }
+
+              env {
+                name = "PREFIX"
+                value = "dbbackups/${var.prefix}"
+              }
+
+              env {
+                name = "MYSQL_ENV_MYSQL_USER"
+                value = "root"
+              }
+
+              env {
+                name = "MYSQL_ENV_MYSQL_PASSWORD"
+                value = var.mysql_root_password
+              }
+
+              env {
+                name = "MYSQL_PORT_3306_TCP_ADDR"
+                value = "mysql-service"
+              }
+
+              env {
+                name = "MYSQL_PORT_3306_TCP_PORT"
+                value = "3306"
+              }
+              
+            }
+          }
+        }
+      }
+    }
+  }
+}
