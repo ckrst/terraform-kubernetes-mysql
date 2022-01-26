@@ -24,18 +24,18 @@ variable "backup_agent_schedule" {
   description = "value for the backup agent schedule"
 }
 
-variable "AWS_ACCESS_KEY_ID" {
+variable "aws_access_key_id" {
   description = "value for the AWS_ACCESS_KEY_ID"
 }
 
-variable "AWS_SECRET_ACCESS_KEY" {
+variable "aws_secret_access_key" {
   description = "value for the AWS_SECRET_ACCESS_KEY"
 }
 
-variable "AWS_BUCKET" {
+variable "aws_bucket" {
   description = "value for the AWS_BUCKET"
 }
 
-variable "S3_PREFIX" {
+variable "s3_prefix" {
   description = "value for the S3_PREFIX"
 }

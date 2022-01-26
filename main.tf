@@ -91,7 +91,7 @@ resource "kubernetes_cron_job" "db_backup_agent" {
 
               env {
                 name = "PREFIX"
-                value = "${var.S3_PREFIX}"
+                value = "${var.s3_prefix}"
               }
 
               env {
