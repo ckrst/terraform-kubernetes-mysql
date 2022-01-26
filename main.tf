@@ -60,7 +60,7 @@ resource "kubernetes_cron_job" "db_backup_agent" {
     namespace = var.namespace
   }
   spec {
-    schedule = "0 0 * * *"
+    schedule = var.backup_agent_schedule
     job_template {
       spec {
         template {
@@ -91,7 +91,7 @@ resource "kubernetes_cron_job" "db_backup_agent" {
 
               env {
                 name = "PREFIX"
-                value = "dbbackups/${var.prefix}"
+                value = "${var.S3_PREFIX}"
               }
 
               env {
