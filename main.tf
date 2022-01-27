@@ -1,6 +1,6 @@
 resource "kubernetes_deployment" "mysql_deployment" {
   metadata {
-    name = "mysql-deployment"
+    name      = "mysql-deployment"
     namespace = var.namespace
     labels = {
       app = "mysql"
@@ -21,13 +21,13 @@ resource "kubernetes_deployment" "mysql_deployment" {
       }
       spec {
         container {
-          name = "mysql"
+          name  = "mysql"
           image = var.mysql_image
           port {
             container_port = 3306
           }
           env {
-            name = "MYSQL_ROOT_PASSWORD"
+            name  = "MYSQL_ROOT_PASSWORD"
             value = var.mysql_root_password
           }
         }
@@ -38,7 +38,7 @@ resource "kubernetes_deployment" "mysql_deployment" {
 
 resource "kubernetes_service" "mysql_service" {
   metadata {
-    name = "mysql-service"
+    name      = "mysql-service"
     namespace = var.namespace
   }
   spec {
@@ -56,7 +56,7 @@ resource "kubernetes_service" "mysql_service" {
 
 resource "kubernetes_cron_job" "db_backup_agent" {
   metadata {
-    name = "db-backup-agent"
+    name      = "db-backup-agent"
     namespace = var.namespace
   }
   spec {
@@ -69,7 +69,7 @@ resource "kubernetes_cron_job" "db_backup_agent" {
 
     job_template {
       metadata {
-        
+
       }
       spec {
         backoff_limit              = 2
@@ -82,49 +82,49 @@ resource "kubernetes_cron_job" "db_backup_agent" {
           }
           spec {
             container {
-              name = "db-backup-agent"
+              name  = "db-backup-agent"
               image = "perfectweb/mysqldump-to-s3"
 
               env {
-                name = "AWS_ACCESS_KEY_ID"
+                name  = "AWS_ACCESS_KEY_ID"
                 value = var.aws_access_key_id
               }
 
               env {
-                name = "AWS_SECRET_ACCESS_KEY"
+                name  = "AWS_SECRET_ACCESS_KEY"
                 value = var.aws_secret_access_key
               }
 
               env {
-                name = "AWS_BUCKET"
+                name  = "AWS_BUCKET"
                 value = var.aws_bucket
               }
 
               env {
-                name = "PREFIX"
-                value = "${var.s3_prefix}"
+                name  = "PREFIX"
+                value = var.s3_prefix
               }
 
               env {
-                name = "MYSQL_ENV_MYSQL_USER"
+                name  = "MYSQL_ENV_MYSQL_USER"
                 value = "root"
               }
 
               env {
-                name = "MYSQL_ENV_MYSQL_PASSWORD"
+                name  = "MYSQL_ENV_MYSQL_PASSWORD"
                 value = var.mysql_root_password
               }
 
               env {
-                name = "MYSQL_PORT_3306_TCP_ADDR"
+                name  = "MYSQL_PORT_3306_TCP_ADDR"
                 value = "mysql-service"
               }
 
               env {
-                name = "MYSQL_PORT_3306_TCP_PORT"
+                name  = "MYSQL_PORT_3306_TCP_PORT"
                 value = "3306"
               }
-              
+
             }
           }
         }

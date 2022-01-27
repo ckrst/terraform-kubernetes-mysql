@@ -7,12 +7,12 @@ variable "mysql_root_password" {
 }
 
 variable "service_type" {
-  default = "NodePort"
+  default     = "NodePort"
   description = "value for the service type"
 }
 
 variable "mysql_image" {
-  default = "mysql:5.6"
+  default     = "mysql:5.6"
   description = "value for the mysql image"
 }
 
@@ -20,7 +20,7 @@ variable "mysql_image" {
 # backup agent
 
 variable "backup_agent_schedule" {
-  default = "0 0 * * *"
+  default     = "0 0 * * *"
   description = "value for the backup agent schedule"
 }
 
