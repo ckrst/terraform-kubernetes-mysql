@@ -16,6 +16,20 @@ variable "mysql_image" {
   description = "value for the mysql image"
 }
 
+variable "node_name" {
+  default     = ""
+  description = "value for the node name"
+}
+variable "storage_class_name" {
+  description = "value for the storage class name"
+}
+variable "volume_size" {
+  default     = "10Gi"
+  description = "value for the volume size"
+}
+variable "volume_name" {
+  description = "value for the volume name"
+}
 
 # backup agent
 

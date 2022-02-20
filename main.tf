@@ -20,6 +20,8 @@ resource "kubernetes_deployment" "mysql_deployment" {
         }
       }
       spec {
+        node_name = var.node_name
+
         container {
           name  = "mysql"
           image = var.mysql_image
@@ -30,9 +32,37 @@ resource "kubernetes_deployment" "mysql_deployment" {
             name  = "MYSQL_ROOT_PASSWORD"
             value = var.mysql_root_password
           }
+          volume_mount {
+            mount_path = "/var/lib/mysql/"
+            name       = "db-volume"
+          }
+        }
+
+        volume {
+          name = "db-volume"
+          persistent_volume_claim {
+            claim_name = kubernetes_persistent_volume_claim.mysql_persistent_volume_claim.metadata.0.name
+          }
         }
       }
     }
+  }
+}
+
+resource "kubernetes_persistent_volume_claim" "mysql_persistent_volume_claim" {
+  metadata {
+    name      = "mysql-volume-claim"
+    namespace = var.namespace
+  }
+  spec {
+    storage_class_name = var.storage_class_name
+    access_modes       = ["ReadWriteMany"]
+    resources {
+      requests = {
+        storage = var.volume_size
+      }
+    }
+    volume_name = var.volume_name
   }
 }
 
@@ -89,42 +119,34 @@ resource "kubernetes_cron_job" "db_backup_agent" {
                 name  = "AWS_ACCESS_KEY_ID"
                 value = var.aws_access_key_id
               }
-
               env {
                 name  = "AWS_SECRET_ACCESS_KEY"
                 value = var.aws_secret_access_key
               }
-
               env {
                 name  = "AWS_BUCKET"
                 value = var.aws_bucket
               }
-
               env {
                 name  = "PREFIX"
                 value = var.s3_prefix
               }
-
               env {
                 name  = "MYSQL_ENV_MYSQL_USER"
                 value = "root"
               }
-
               env {
                 name  = "MYSQL_ENV_MYSQL_PASSWORD"
                 value = var.mysql_root_password
               }
-
               env {
                 name  = "MYSQL_PORT_3306_TCP_ADDR"
                 value = "mysql-service"
               }
-
               env {
                 name  = "MYSQL_PORT_3306_TCP_PORT"
                 value = "3306"
               }
-
             }
           }
         }
